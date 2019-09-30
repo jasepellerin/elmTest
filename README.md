@@ -2,10 +2,15 @@
 Note-taking app built using Elm, Netlify, and FaunaDB
 
 - [notorious](#notorious)
+  - [Status](#status)
   - [Notes](#notes)
   - [Get the Netlify CLI](#get-the-netlify-cli)
   - [Add FaunaDB](#add-faunadb)
   - [Run locally](#run-locally)
+
+## Status
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/73b342e4-76ae-479a-9687-8496cc3fa07c/deploy-status)](https://app.netlify.com/sites/notorious/deploys)
 
 ## Notes
 
