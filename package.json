@@ -6,8 +6,8 @@
   "author": "<jasepellerin@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "elm-live src/Main.elm --open",
-    "build": "elm make src/Main.elm --output=dist/index.html"
+    "dev": "elm-live src/Main.elm --open --start-page=src/static/index.html -- --output=dist/main.js",
+    "build": "elm make src/Main.elm --output=dist/main.js"
   },
   "devDependencies": {
     "elm": "^0.19.0-no-deps",
