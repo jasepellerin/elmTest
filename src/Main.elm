@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
 
 
+main : Program () Model Msg
 main =
     Browser.document
         { init = init
@@ -19,21 +20,22 @@ main =
 -- MODEL
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
-
-
 type alias Model =
     { name : String
     }
 
 
-init : String -> ( Model, Cmd Msg )
-init name =
-    ( { name = name }
-    , Cmd.none
-    )
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
+
+
+init : () -> ( Model, Cmd Msg )
+init =
+    always
+        ( { name = "Test" }
+        , Cmd.none
+        )
 
 
 
