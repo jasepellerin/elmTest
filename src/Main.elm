@@ -4,6 +4,8 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
+import Note
+import Time
 
 
 main : Program () Model Msg
@@ -22,6 +24,7 @@ main =
 
 type alias Model =
     { name : String
+    , notes : List Note.Note
     }
 
 
@@ -33,7 +36,15 @@ subscriptions model =
 init : () -> ( Model, Cmd Msg )
 init =
     always
-        ( { name = "Test" }
+        ( { name = "Test"
+          , notes =
+                [ { title = "My First Note"
+                  , content = "This is a test!"
+                  , id = "1"
+                  , timeCreated = Time.millisToPosix 0
+                  }
+                ]
+          }
         , Cmd.none
         )
 
@@ -59,6 +70,6 @@ update msg model =
 
 view : Model -> Browser.Document Msg
 view model =
-    { body = [ div [] [ text model.name ] ]
+    { body = [ div [] (List.map Note.view model.notes) ]
     , title = "Test"
     }
