@@ -71,5 +71,5 @@ update msg model =
 view : Model -> Browser.Document Msg
 view model =
     { body = [ div [] (List.map Note.view model.notes) ]
-    , title = "Test"
+    , title = "notorious"
     }
