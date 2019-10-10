@@ -24,9 +24,10 @@ main =
 
 
 type alias Model =
-    { name : String
-    , zone : Time.Zone
+    { currentId : Int
+    , name : String
     , notes : List Note.Note
+    , zone : Time.Zone
     }
 
 
@@ -38,15 +39,11 @@ subscriptions model =
 init : () -> ( Model, Cmd Msg )
 init =
     always
-        ( { name = "Test"
+        ( { currentId = 1
+          , name = "Test"
           , zone = Time.utc
           , notes =
-                [ { title = "My First Note"
-                  , content = "This is a test!"
-                  , id = "1"
-                  , timeCreated = Time.millisToPosix 1570748096610
-                  }
-                ]
+                []
           }
         , Task.perform AdjustTimeZone Time.here
         )
@@ -76,11 +73,11 @@ update msg model =
                 newNote =
                     { title = "New Note!"
                     , content = "We dynamic"
-                    , id = "2"
+                    , id = model.currentId
                     , timeCreated = time
                     }
             in
-            ( { model | notes = newNote :: model.notes }, Cmd.none )
+            ( { model | notes = newNote :: model.notes, currentId = model.currentId + 1 }, Cmd.none )
 
 
 
@@ -90,8 +87,8 @@ update msg model =
 view : Model -> Browser.Document Msg
 view model =
     { body =
-        [ div [] (List.map (Note.view model.zone) model.notes)
-        , div [ onClick AddNoteClick ] [ text "add" ]
+        [ header [] [ h1 [ style "display" "inline-block" ] [ text "notorious" ], button [ onClick AddNoteClick ] [ text "add note" ] ]
+        , main_ [] (List.map (Note.view model.zone) model.notes)
         ]
     , title = "notorious"
     }

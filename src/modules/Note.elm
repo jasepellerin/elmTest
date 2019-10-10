@@ -14,7 +14,7 @@ import TimeHelpers exposing (..)
 
 type alias Note =
     { title : String
-    , id : String
+    , id : Int
     , content : String
     , timeCreated : Posix
     }
@@ -34,7 +34,7 @@ view timeZone model =
             getHumanReadableTime model.timeCreated timeZone
     in
     article
-        []
+        [ id (String.fromInt model.id) ]
         [ h1 [] [ text model.title ]
         , small [] [ text ("Created " ++ postDate ++ " "), time [ datetime postTime ] [ text postTime ] ]
         , p [] [ text model.content ]
