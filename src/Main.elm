@@ -3,7 +3,7 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onClick, onInput)
 import Note
 import Task
 import Time
@@ -58,6 +58,8 @@ init =
 
 type Msg
     = AdjustTimeZone Time.Zone
+    | AddNoteClick
+    | AddNote Time.Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -66,6 +68,20 @@ update msg model =
         AdjustTimeZone newZone ->
             ( { model | zone = newZone }, Cmd.none )
 
+        AddNoteClick ->
+            ( model, Task.perform AddNote Time.now )
+
+        AddNote time ->
+            let
+                newNote =
+                    { title = "New Note!"
+                    , content = "We dynamic"
+                    , id = "2"
+                    , timeCreated = time
+                    }
+            in
+            ( { model | notes = newNote :: model.notes }, Cmd.none )
+
 
 
 -- VIEW
@@ -73,6 +89,9 @@ update msg model =
 
 view : Model -> Browser.Document Msg
 view model =
-    { body = [ div [] (List.map (Note.view model.zone) model.notes) ]
+    { body =
+        [ div [] (List.map (Note.view model.zone) model.notes)
+        , div [ onClick AddNoteClick ] [ text "add" ]
+        ]
     , title = "notorious"
     }
