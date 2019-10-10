@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
 import Note
+import Task
 import Time
 
 
@@ -24,6 +25,7 @@ main =
 
 type alias Model =
     { name : String
+    , zone : Time.Zone
     , notes : List Note.Note
     }
 
@@ -37,15 +39,16 @@ init : () -> ( Model, Cmd Msg )
 init =
     always
         ( { name = "Test"
+          , zone = Time.utc
           , notes =
                 [ { title = "My First Note"
                   , content = "This is a test!"
                   , id = "1"
-                  , timeCreated = Time.millisToPosix 0
+                  , timeCreated = Time.millisToPosix 1570748096610
                   }
                 ]
           }
-        , Cmd.none
+        , Task.perform AdjustTimeZone Time.here
         )
 
 
@@ -54,14 +57,14 @@ init =
 
 
 type Msg
-    = Name String
+    = AdjustTimeZone Time.Zone
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Name string ->
-            ( { model | name = string }, Cmd.none )
+        AdjustTimeZone newZone ->
+            ( { model | zone = newZone }, Cmd.none )
 
 
 
@@ -70,6 +73,6 @@ update msg model =
 
 view : Model -> Browser.Document Msg
 view model =
-    { body = [ div [] (List.map Note.view model.notes) ]
+    { body = [ div [] (List.map (Note.view model.zone) model.notes) ]
     , title = "notorious"
     }

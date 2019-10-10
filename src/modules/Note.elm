@@ -23,14 +23,14 @@ type alias Note =
 -- VIEW
 
 
-view : Note -> Html msg
-view model =
+view : Zone -> Note -> Html msg
+view timeZone model =
     let
         postDate =
-            getHumanReadableDate model.timeCreated
+            getHumanReadableDate model.timeCreated timeZone
 
         postTime =
-            getHumanReadableTime model.timeCreated
+            getHumanReadableTime model.timeCreated timeZone
     in
     article
         []
@@ -40,14 +40,14 @@ view model =
         ]
 
 
-getHumanReadableDate : Posix -> String
-getHumanReadableDate createdTime =
-    toEnglishMonth (toMonth utc createdTime) ++ " " ++ String.fromInt (toDay utc createdTime)
+getHumanReadableDate : Posix -> Zone -> String
+getHumanReadableDate createdTime timeZone =
+    toEnglishMonth (toMonth timeZone createdTime) ++ " " ++ String.fromInt (toDay timeZone createdTime)
 
 
-getHumanReadableTime : Posix -> String
-getHumanReadableTime createdTime =
-    toTwoDigitString (toHour utc createdTime) ++ ":" ++ toTwoDigitString (toMinute utc createdTime)
+getHumanReadableTime : Posix -> Zone -> String
+getHumanReadableTime createdTime timeZone =
+    toTwoDigitString (toHour timeZone createdTime) ++ ":" ++ toTwoDigitString (toMinute timeZone createdTime)
 
 
 toTwoDigitString : Int -> String
