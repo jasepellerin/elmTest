@@ -27,37 +27,37 @@ toEnglishMonth : Month -> String
 toEnglishMonth month =
     case month of
         Jan ->
-            "january"
+            "January"
 
         Feb ->
-            "february"
+            "February"
 
         Mar ->
-            "march"
+            "March"
 
         Apr ->
-            "april"
+            "April"
 
         May ->
-            "may"
+            "May"
 
         Jun ->
-            "june"
+            "June"
 
         Jul ->
-            "july"
+            "July"
 
         Aug ->
-            "august"
+            "August"
 
         Sep ->
-            "september"
+            "September"
 
         Oct ->
-            "october"
+            "October"
 
         Nov ->
-            "november"
+            "November"
 
         Dec ->
-            "december"
+            "December"
