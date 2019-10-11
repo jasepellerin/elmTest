@@ -87,7 +87,13 @@ update msg model =
 view : Model -> Browser.Document Msg
 view model =
     { body =
-        [ header [] [ h1 [ style "display" "inline-block" ] [ text "notorious" ], button [ onClick AddNoteClick ] [ text "add note" ] ]
+        [ header []
+            [ h1 []
+                [ text "notorious" ]
+            , button
+                [ onClick AddNoteClick ]
+                [ text "Add note" ]
+            ]
         , main_ [] (List.map (Note.view model.zone) model.notes)
         ]
     , title = "notorious"
