@@ -90,9 +90,18 @@ update msg model =
         UpdateNote id newNote ->
             let
                 newNotes =
-                    newNote :: List.filter (\x -> x.id /= id) model.notes
+                    List.map (noteReplacer newNote) model.notes
             in
             ( { model | notes = newNotes }, Cmd.none )
+
+
+noteReplacer : Note -> Note -> Note
+noteReplacer newNote existingNote =
+    if existingNote.id == newNote.id then
+        newNote
+
+    else
+        existingNote
 
 
 
