@@ -61,6 +61,7 @@ type Msg
     | AddNoteClick
     | AddNote Time.Posix
     | ChangeEditingId Int
+    | ResetEditingId
     | UpdateNote Int Note
 
 
@@ -86,6 +87,9 @@ update msg model =
 
         ChangeEditingId newId ->
             ( { model | editingId = newId }, Cmd.none )
+
+        ResetEditingId ->
+            ( { model | editingId = -1 }, Cmd.none )
 
         UpdateNote id newNote ->
             let
@@ -127,7 +131,7 @@ view model =
 displayNote : Time.Zone -> Int -> Note -> Html Msg
 displayNote zone editableId note =
     if note.id == editableId then
-        EditableNote.view UpdateNote note
+        EditableNote.view ResetEditingId UpdateNote note
 
     else
         Note.view ChangeEditingId zone note

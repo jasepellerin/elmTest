@@ -20,11 +20,15 @@ type alias Note =
     }
 
 
+type alias EditHandler msg =
+    Int -> msg
+
+
 
 -- VIEW
 
 
-view : (Int -> msg) -> Zone -> Note -> Html msg
+view : EditHandler msg -> Zone -> Note -> Html msg
 view editHandler timeZone model =
     let
         postDate =
