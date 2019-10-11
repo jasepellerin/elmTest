@@ -3,7 +3,7 @@ module Note exposing (Note, view)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onClick, onInput)
 import Time exposing (..)
 import TimeHelpers exposing (..)
 
@@ -24,8 +24,8 @@ type alias Note =
 -- VIEW
 
 
-view : Zone -> Note -> Html msg
-view timeZone model =
+view : (Int -> msg) -> Zone -> Note -> Html msg
+view editHandler timeZone model =
     let
         postDate =
             getHumanReadableDate model.timeCreated timeZone
@@ -44,4 +44,5 @@ view timeZone model =
             , hr [] []
             ]
         , p [] [ text model.content ]
+        , button [ onClick (editHandler model.id) ] [ text "Edit" ]
         ]

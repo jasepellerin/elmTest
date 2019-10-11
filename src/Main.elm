@@ -1,10 +1,11 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import EditableNote exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Note
+import Note exposing (Note, view)
 import Task
 import Time
 
@@ -25,6 +26,7 @@ main =
 
 type alias Model =
     { currentId : Int
+    , editingId : Int
     , name : String
     , notes : List Note.Note
     , zone : Time.Zone
@@ -39,11 +41,12 @@ subscriptions model =
 init : () -> ( Model, Cmd Msg )
 init =
     always
-        ( { currentId = 1
+        ( { currentId = 0
+          , editingId = 0
           , name = "Test"
-          , zone = Time.utc
           , notes =
                 []
+          , zone = Time.utc
           }
         , Task.perform AdjustTimeZone Time.here
         )
@@ -57,6 +60,8 @@ type Msg
     = AdjustTimeZone Time.Zone
     | AddNoteClick
     | AddNote Time.Posix
+    | ChangeEditingId Int
+    | UpdateNote Int Note
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -79,6 +84,16 @@ update msg model =
             in
             ( { model | notes = newNote :: model.notes, currentId = model.currentId + 1 }, Cmd.none )
 
+        ChangeEditingId newId ->
+            ( { model | editingId = newId }, Cmd.none )
+
+        UpdateNote id newNote ->
+            let
+                newNotes =
+                    newNote :: List.filter (\x -> x.id /= id) model.notes
+            in
+            ( { model | notes = newNotes }, Cmd.none )
+
 
 
 -- VIEW
@@ -94,7 +109,16 @@ view model =
                 [ onClick AddNoteClick ]
                 [ text "Add note" ]
             ]
-        , main_ [] (List.map (Note.view model.zone) model.notes)
+        , main_ [] (List.map (displayNote model.zone model.editingId) model.notes)
         ]
     , title = "notorious"
     }
+
+
+displayNote : Time.Zone -> Int -> Note -> Html Msg
+displayNote zone editableId note =
+    if note.id == editableId then
+        EditableNote.view UpdateNote note
+
+    else
+        Note.view ChangeEditingId zone note
