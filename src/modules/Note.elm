@@ -35,7 +35,13 @@ view timeZone model =
     in
     article
         [ id (String.fromInt model.id) ]
-        [ h2 [] [ text model.title ]
-        , small [] [ text ("Created " ++ postDate ++ " "), time [ datetime postTime ] [ text postTime ] ]
+        [ div [ class "title" ]
+            [ h2 [] [ text model.title ]
+            , small []
+                [ text ("Created " ++ postDate ++ " ")
+                , time [ datetime postTime ] [ text postTime ]
+                ]
+            , hr [] []
+            ]
         , p [] [ text model.content ]
         ]
