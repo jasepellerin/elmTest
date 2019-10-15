@@ -62,6 +62,7 @@ type Msg
     | AddNote Time.Posix
     | ChangeEditingId Int
     | ResetEditingId
+    | RemoveNote Int
     | UpdateNote Int Note
 
 
@@ -87,6 +88,9 @@ update msg model =
 
         ChangeEditingId newId ->
             ( { model | editingId = newId }, Cmd.none )
+
+        RemoveNote id ->
+            ( { model | notes = List.filter (\x -> x.id /= id) model.notes }, Cmd.none )
 
         ResetEditingId ->
             ( { model | editingId = -1 }, Cmd.none )
@@ -134,4 +138,4 @@ displayNote zone editableId note =
         EditableNote.view ResetEditingId UpdateNote note
 
     else
-        Note.view ChangeEditingId zone note
+        Note.view RemoveNote ChangeEditingId zone note

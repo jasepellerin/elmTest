@@ -24,12 +24,16 @@ type alias EditHandler msg =
     Int -> msg
 
 
+type alias RemoveHandler msg =
+    Int -> msg
+
+
 
 -- VIEW
 
 
-view : EditHandler msg -> Zone -> Note -> Html msg
-view editHandler timeZone model =
+view : RemoveHandler msg -> EditHandler msg -> Zone -> Note -> Html msg
+view removeHandler editHandler timeZone model =
     let
         postDate =
             getHumanReadableDate model.timeCreated timeZone
@@ -49,4 +53,5 @@ view editHandler timeZone model =
             ]
         , p [] [ text model.content ]
         , button [ onClick (editHandler model.id) ] [ text "Edit" ]
+        , button [ onClick (removeHandler model.id) ] [ text "Remove" ]
         ]
