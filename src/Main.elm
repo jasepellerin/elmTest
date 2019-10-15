@@ -42,7 +42,7 @@ init : () -> ( Model, Cmd Msg )
 init =
     always
         ( { currentId = 0
-          , editingId = 0
+          , editingId = -1
           , name = "Test"
           , notes =
                 []
