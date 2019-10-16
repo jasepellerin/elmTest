@@ -27,7 +27,6 @@ main =
 type alias Model =
     { currentId : Int
     , editingId : Int
-    , name : String
     , notes : List Note.Note
     , zone : Time.Zone
     }
@@ -43,7 +42,6 @@ init =
     always
         ( { currentId = 0
           , editingId = -1
-          , name = "Test"
           , notes =
                 []
           , zone = Time.utc
