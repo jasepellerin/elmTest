@@ -125,8 +125,15 @@ view model =
 
 displayNote : Time.Zone -> Int -> Note -> Html Msg
 displayNote zone editableId note =
+    let
+        editableConfig =
+            EditableNote.Config ResetEditingId UpdateNote
+
+        noteConfig =
+            Note.Config ChangeEditingId RemoveNote
+    in
     if note.id == editableId then
-        EditableNote.view ResetEditingId UpdateNote note
+        EditableNote.view editableConfig note
 
     else
-        Note.view RemoveNote ChangeEditingId zone note
+        Note.view noteConfig zone note

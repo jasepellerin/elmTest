@@ -1,4 +1,4 @@
-module Note exposing (Note, init, view)
+module Note exposing (Config, Note, init, view)
 
 import Browser
 import Html exposing (..)
@@ -10,6 +10,12 @@ import TimeHelpers exposing (..)
 
 
 -- NOTE
+
+
+type alias Config msg =
+    { editNote : Int -> msg
+    , removeNote : Int -> msg
+    }
 
 
 type alias Note =
@@ -29,20 +35,12 @@ init id time_ =
     }
 
 
-type alias EditHandler msg =
-    Int -> msg
-
-
-type alias RemoveHandler msg =
-    Int -> msg
-
-
 
 -- VIEW
 
 
-view : RemoveHandler msg -> EditHandler msg -> Zone -> Note -> Html msg
-view removeHandler editHandler timeZone model =
+view : Config msg -> Zone -> Note -> Html msg
+view config timeZone model =
     let
         postDate =
             getHumanReadableDate model.timeCreated timeZone
@@ -61,6 +59,6 @@ view removeHandler editHandler timeZone model =
             , hr [] []
             ]
         , p [] [ text model.content ]
-        , button [ onClick (editHandler model.id) ] [ text "Edit" ]
-        , button [ onClick (removeHandler model.id) ] [ text "Remove" ]
+        , button [ onClick (config.editNote model.id) ] [ text "Edit" ]
+        , button [ onClick (config.removeNote model.id) ] [ text "Remove" ]
         ]

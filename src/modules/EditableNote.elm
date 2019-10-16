@@ -1,4 +1,4 @@
-module EditableNote exposing (view)
+module EditableNote exposing (Config, view)
 
 import Browser
 import Html exposing (..)
@@ -11,19 +11,25 @@ type alias UpdateHandler msg =
     Int -> Note -> msg
 
 
+type alias Config msg =
+    { resetEditing : msg
+    , updateNote : UpdateHandler msg
+    }
+
+
 
 -- VIEW
 
 
-view : msg -> UpdateHandler msg -> Note -> Html msg
-view doneEditingHandler editHandler model =
+view : Config msg -> Note -> Html msg
+view config model =
     article
         [ id (String.fromInt model.id) ]
         [ div [ class "title" ]
-            [ input [ value model.title, onInput (titleChangeHandler editHandler model) ] []
+            [ input [ value model.title, onInput (titleChangeHandler config.updateNote model) ] []
             , hr [] []
             ]
-        , textarea [ value model.content, onInput (contentChangeHandler editHandler model), onBlur doneEditingHandler ] []
+        , textarea [ value model.content, onInput (contentChangeHandler config.updateNote model), onBlur config.resetEditing ] []
         ]
 
 
