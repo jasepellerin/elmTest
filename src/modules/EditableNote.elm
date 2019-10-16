@@ -13,7 +13,6 @@ type alias UpdateHandler msg =
 
 type alias Config msg =
     { finishEditing : msg
-    , updateFocus : msg
     , updateNote : UpdateHandler msg
     }
 

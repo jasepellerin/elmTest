@@ -6,7 +6,6 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Note exposing (Note)
-import Ports
 import Task
 import Time
 
@@ -35,7 +34,7 @@ type alias Model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Ports.getFocusedParentId ChangeEditingId
+    Sub.none
 
 
 init : () -> ( Model, Cmd Msg )
@@ -60,10 +59,8 @@ type Msg
     | AddNoteClick
     | AddNote Time.Posix
     | ChangeEditingId Int
-    | NoOp
     | ResetEditingId
     | RemoveNote Int
-    | UpdateFocus
     | UpdateNote Int Note
 
 
@@ -82,17 +79,11 @@ update msg model =
         ChangeEditingId newId ->
             ( { model | editingId = newId }, Cmd.none )
 
-        NoOp ->
-            ( model, Cmd.none )
-
         RemoveNote id ->
             ( { model | notes = List.filter (\x -> x.id /= id) model.notes }, Cmd.none )
 
         ResetEditingId ->
             ( { model | notes = List.filter (\x -> x.title /= "" || x.content /= "") model.notes, editingId = -1 }, Cmd.none )
-
-        UpdateFocus ->
-            ( model, Ports.checkFocusedParent () )
 
         UpdateNote id newNote ->
             let
@@ -134,7 +125,7 @@ displayNote : Model -> Note -> Html Msg
 displayNote model note =
     let
         editableConfig =
-            EditableNote.Config ResetEditingId UpdateFocus UpdateNote
+            EditableNote.Config ResetEditingId UpdateNote
 
         noteConfig =
             Note.Config ChangeEditingId RemoveNote

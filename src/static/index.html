@@ -17,12 +17,6 @@
         var app = Elm.Main.init({
             node: document.getElementById('elm')
         });
-
-        app.ports.checkFocusedParent.subscribe(function(e) {
-            var parentId = document.activeElement ? document.activeElement.parentElement.id : null;
-            var parsedId = isNaN(parseInt(parentId)) ? -1 : parseInt(parentId)
-            app.ports.getFocusedParentId.send(parsedId);
-        });
     </script>
 </body>
 </html>
