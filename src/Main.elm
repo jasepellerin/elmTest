@@ -1,11 +1,11 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
-import EditableNote exposing (view)
+import EditableNote
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Note exposing (Note, view)
+import Note exposing (Note)
 import Task
 import Time
 
@@ -76,15 +76,7 @@ update msg model =
             ( model, Task.perform AddNote Time.now )
 
         AddNote time ->
-            let
-                newNote =
-                    { title = "New Note!"
-                    , content = "We dynamic"
-                    , id = model.currentId
-                    , timeCreated = time
-                    }
-            in
-            ( { model | notes = newNote :: model.notes, currentId = model.currentId + 1 }, Cmd.none )
+            ( { model | notes = Note.init model.currentId time :: model.notes, currentId = model.currentId + 1 }, Cmd.none )
 
         ChangeEditingId newId ->
             ( { model | editingId = newId }, Cmd.none )
@@ -97,19 +89,18 @@ update msg model =
 
         UpdateNote id newNote ->
             let
+                noteReplacer : Note -> Note
+                noteReplacer existingNote =
+                    if existingNote.id == newNote.id then
+                        newNote
+
+                    else
+                        existingNote
+
                 newNotes =
-                    List.map (noteReplacer newNote) model.notes
+                    List.map noteReplacer model.notes
             in
             ( { model | notes = newNotes }, Cmd.none )
-
-
-noteReplacer : Note -> Note -> Note
-noteReplacer newNote existingNote =
-    if existingNote.id == newNote.id then
-        newNote
-
-    else
-        existingNote
 
 
 

@@ -1,10 +1,10 @@
-module Note exposing (Note, view)
+module Note exposing (Note, init, view)
 
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Time exposing (..)
+import Time exposing (Posix, Zone)
 import TimeHelpers exposing (..)
 
 
@@ -17,6 +17,15 @@ type alias Note =
     , id : Int
     , content : String
     , timeCreated : Posix
+    }
+
+
+init : Int -> Posix -> Note
+init id time_ =
+    { title = "New Note!"
+    , content = "This is a new note!"
+    , id = id
+    , timeCreated = time_
     }
 
 
