@@ -20,7 +20,8 @@
 
         app.ports.checkFocusedParent.subscribe(function(e) {
             var parentId = document.activeElement ? document.activeElement.parentElement.id : null;
-            app.ports.getFocusedParentId.send(parentId);
+            var parsedId = isNaN(parseInt(parentId)) ? -1 : parseInt(parentId)
+            app.ports.getFocusedParentId.send(parsedId);
         });
     </script>
 </body>

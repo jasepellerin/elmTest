@@ -53,7 +53,7 @@ view config timeZone model =
         [ div [ class "title" ]
             [ h2 [] [ text model.title ]
             , small []
-                [ text ("Created " ++ postDate ++ " ")
+                [ text ("Created " ++ postDate ++ " at ")
                 , time [ datetime postTime ] [ text postTime ]
                 ]
             , hr [] []

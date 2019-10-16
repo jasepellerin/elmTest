@@ -3,7 +3,7 @@ module EditableNote exposing (Config, view)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onBlur, onInput)
+import Html.Events exposing (onBlur, onClick, onInput)
 import Note exposing (Note)
 
 
@@ -12,7 +12,7 @@ type alias UpdateHandler msg =
 
 
 type alias Config msg =
-    { resetEditing : msg
+    { finishEditing : msg
     , updateFocus : msg
     , updateNote : UpdateHandler msg
     }
@@ -26,9 +26,10 @@ view : Config msg -> Note -> Html msg
 view config model =
     article
         [ id (String.fromInt model.id) ]
-        [ input [ value model.title, onInput (titleChangeHandler config.updateNote model), onBlur config.updateFocus ] []
+        [ input [ placeholder "Add a title!", onInput (titleChangeHandler config.updateNote model), value model.title ] []
         , hr [] []
-        , textarea [ value model.content, onInput (contentChangeHandler config.updateNote model), onBlur config.updateFocus ] []
+        , textarea [ placeholder "Add some content!", onInput (contentChangeHandler config.updateNote model), value model.content ] []
+        , button [ onClick config.finishEditing ] [ text "Save" ]
         ]
 
 

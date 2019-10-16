@@ -35,21 +35,7 @@ type alias Model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Ports.getFocusedParentId handleFocusChange
-
-
-handleFocusChange : Maybe String -> Msg
-handleFocusChange maybeParentId =
-    let
-        parentId =
-            String.toInt (Maybe.withDefault "-1" maybeParentId)
-    in
-    case parentId of
-        Just id ->
-            ChangeEditingId id
-
-        Nothing ->
-            NoOp
+    Ports.getFocusedParentId ChangeEditingId
 
 
 init : () -> ( Model, Cmd Msg )
@@ -103,7 +89,7 @@ update msg model =
             ( { model | notes = List.filter (\x -> x.id /= id) model.notes }, Cmd.none )
 
         ResetEditingId ->
-            ( { model | editingId = -1 }, Cmd.none )
+            ( { model | notes = List.filter (\x -> x.title /= "" || x.content /= "") model.notes, editingId = -1 }, Cmd.none )
 
         UpdateFocus ->
             ( model, Ports.checkFocusedParent () )
@@ -138,14 +124,14 @@ view model =
                 [ onClick AddNoteClick ]
                 [ text "Add note" ]
             ]
-        , main_ [] (List.map (displayNote model.zone model.editingId) model.notes)
+        , main_ [] (List.map (displayNote model) model.notes)
         ]
     , title = "notorious"
     }
 
 
-displayNote : Time.Zone -> Int -> Note -> Html Msg
-displayNote zone editableId note =
+displayNote : Model -> Note -> Html Msg
+displayNote model note =
     let
         editableConfig =
             EditableNote.Config ResetEditingId UpdateFocus UpdateNote
@@ -153,8 +139,8 @@ displayNote zone editableId note =
         noteConfig =
             Note.Config ChangeEditingId RemoveNote
     in
-    if note.id == editableId then
+    if note.id == model.editingId then
         EditableNote.view editableConfig note
 
     else
-        Note.view noteConfig zone note
+        Note.view noteConfig model.zone note
