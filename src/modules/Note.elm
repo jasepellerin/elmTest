@@ -28,8 +28,8 @@ type alias Note =
 
 init : Int -> Posix -> Note
 init id time_ =
-    { title = "New Note!"
-    , content = "This is a new note!"
+    { title = ""
+    , content = ""
     , id = id
     , timeCreated = time_
     }

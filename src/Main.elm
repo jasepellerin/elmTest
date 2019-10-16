@@ -59,7 +59,7 @@ type Msg
     | AddNoteClick
     | AddNote Time.Posix
     | ChangeEditingId Int
-    | ResetEditingId
+    | FinishEditingNote
     | RemoveNote Int
     | UpdateNote Int Note
 
@@ -74,16 +74,23 @@ update msg model =
             ( model, Task.perform AddNote Time.now )
 
         AddNote time ->
-            ( { model | notes = Note.init model.currentNewNoteId time :: model.notes, currentNewNoteId = model.currentNewNoteId + 1 }, Cmd.none )
+            update
+                (ChangeEditingId
+                    model.currentNewNoteId
+                )
+                { model
+                    | notes = Note.init model.currentNewNoteId time :: model.notes
+                    , currentNewNoteId = model.currentNewNoteId + 1
+                }
 
         ChangeEditingId newId ->
-            ( { model | editingId = newId }, Cmd.none )
+            ( { model | notes = List.filter (checkNoteHasTitleOrContent newId) model.notes, editingId = newId }, Cmd.none )
 
         RemoveNote id ->
             ( { model | notes = List.filter (\x -> x.id /= id) model.notes }, Cmd.none )
 
-        ResetEditingId ->
-            ( { model | notes = List.filter (\x -> x.title /= "" || x.content /= "") model.notes, editingId = -1 }, Cmd.none )
+        FinishEditingNote ->
+            update (ChangeEditingId -1) model
 
         UpdateNote id newNote ->
             let
@@ -99,6 +106,11 @@ update msg model =
                     List.map noteReplacer model.notes
             in
             ( { model | notes = newNotes }, Cmd.none )
+
+
+checkNoteHasTitleOrContent : Int -> Note -> Bool
+checkNoteHasTitleOrContent editingId note =
+    (note.title /= "") || note.content /= "" || note.id == editingId
 
 
 
@@ -125,7 +137,7 @@ displayNote : Model -> Note -> Html Msg
 displayNote model note =
     let
         editableConfig =
-            EditableNote.Config ResetEditingId UpdateNote
+            EditableNote.Config FinishEditingNote UpdateNote
 
         noteConfig =
             Note.Config ChangeEditingId RemoveNote
