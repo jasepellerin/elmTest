@@ -13,6 +13,7 @@ type alias UpdateHandler msg =
 
 type alias Config msg =
     { resetEditing : msg
+    , updateFocus : msg
     , updateNote : UpdateHandler msg
     }
 
@@ -25,11 +26,9 @@ view : Config msg -> Note -> Html msg
 view config model =
     article
         [ id (String.fromInt model.id) ]
-        [ div [ class "title" ]
-            [ input [ value model.title, onInput (titleChangeHandler config.updateNote model) ] []
-            , hr [] []
-            ]
-        , textarea [ value model.content, onInput (contentChangeHandler config.updateNote model), onBlur config.resetEditing ] []
+        [ input [ value model.title, onInput (titleChangeHandler config.updateNote model), onBlur config.updateFocus ] []
+        , hr [] []
+        , textarea [ value model.content, onInput (contentChangeHandler config.updateNote model), onBlur config.updateFocus ] []
         ]
 
 

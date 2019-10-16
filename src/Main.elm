@@ -6,6 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Note exposing (Note)
+import Ports
 import Task
 import Time
 
@@ -25,7 +26,7 @@ main =
 
 
 type alias Model =
-    { currentId : Int
+    { currentNewNoteId : Int
     , editingId : Int
     , notes : List Note.Note
     , zone : Time.Zone
@@ -34,13 +35,27 @@ type alias Model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Ports.getFocusedParentId handleFocusChange
+
+
+handleFocusChange : Maybe String -> Msg
+handleFocusChange maybeParentId =
+    let
+        parentId =
+            String.toInt (Maybe.withDefault "-1" maybeParentId)
+    in
+    case parentId of
+        Just id ->
+            ChangeEditingId id
+
+        Nothing ->
+            NoOp
 
 
 init : () -> ( Model, Cmd Msg )
 init =
     always
-        ( { currentId = 0
+        ( { currentNewNoteId = 0
           , editingId = -1
           , notes =
                 []
@@ -59,8 +74,10 @@ type Msg
     | AddNoteClick
     | AddNote Time.Posix
     | ChangeEditingId Int
+    | NoOp
     | ResetEditingId
     | RemoveNote Int
+    | UpdateFocus
     | UpdateNote Int Note
 
 
@@ -74,16 +91,22 @@ update msg model =
             ( model, Task.perform AddNote Time.now )
 
         AddNote time ->
-            ( { model | notes = Note.init model.currentId time :: model.notes, currentId = model.currentId + 1 }, Cmd.none )
+            ( { model | notes = Note.init model.currentNewNoteId time :: model.notes, currentNewNoteId = model.currentNewNoteId + 1 }, Cmd.none )
 
         ChangeEditingId newId ->
             ( { model | editingId = newId }, Cmd.none )
+
+        NoOp ->
+            ( model, Cmd.none )
 
         RemoveNote id ->
             ( { model | notes = List.filter (\x -> x.id /= id) model.notes }, Cmd.none )
 
         ResetEditingId ->
             ( { model | editingId = -1 }, Cmd.none )
+
+        UpdateFocus ->
+            ( model, Ports.checkFocusedParent () )
 
         UpdateNote id newNote ->
             let
@@ -125,7 +148,7 @@ displayNote : Time.Zone -> Int -> Note -> Html Msg
 displayNote zone editableId note =
     let
         editableConfig =
-            EditableNote.Config ResetEditingId UpdateNote
+            EditableNote.Config ResetEditingId UpdateFocus UpdateNote
 
         noteConfig =
             Note.Config ChangeEditingId RemoveNote
